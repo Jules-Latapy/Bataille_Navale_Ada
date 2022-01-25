@@ -73,11 +73,8 @@ package body terrain_pack is
 		t.estVisible := est_Visible ;
 
 		--initialisation du tableau par defaut (de base il ne le fesait pas)
-		for x in CoordonneeX loop
-		for y in CoordonneeY loop
-			t.tab_tire(x,y) := false ;
-		end loop;
-		end loop;
+
+		t.tab_tire:=(others => (others => false)) ;
 
 		return t ;
 
