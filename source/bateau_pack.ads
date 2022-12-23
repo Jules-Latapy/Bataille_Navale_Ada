@@ -4,6 +4,7 @@ with Ada.Numerics.Float_Random ; use Ada.Numerics.Float_Random;
 package bateau_pack is
 	
 	bateau_en_dehors_des_ligne_error : exception ;
+
 	subtype coordonneeX is Natural   range 1..9 ;
 	subtype coordonneeY is Character range 'A'..'I';
 	type Categorie is (Porte_Avions,Croiseur,contre_Torpilleur,Torpilleur);
@@ -41,7 +42,7 @@ private
 
 	type Bateau( size : Integer ) is tagged record
 		categorie_Bateau : Categorie          ;
-		Detruit 		 : Boolean 	 := false ;
+		Detruit 		 : Boolean := false   ;
 		Taille  		 : Integer            ;
 		coordX 			 : PointsX(1..size)	  ;
 		coordY 			 : PointsY(1..size)	  ;

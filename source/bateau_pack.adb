@@ -17,14 +17,14 @@ package body bateau_pack is
 	function new_Bateau(cat:Categorie;X1:CoordonneeX;Y1:CoordonneeY;dir:Direction) return Bateau is
 		
 		function choix_taille return Integer is
-			Taille : Integer :=1;
+			Taille : Integer := 0 ;
 		begin -- choix_taille
 			case cat is
-				when Porte_Avions 		=>Taille :=5 ;
-				when Croiseur 			=>Taille :=4 ;
-				when Contre_Torpilleur	=>Taille :=3 ;
-				when Torpilleur 		=>Taille :=2 ;
-				when others 			=>Taille :=1 ;
+				when Porte_Avions 		=> Taille :=5 ;
+				when Croiseur 			=> Taille :=4 ;
+				when Contre_Torpilleur	=> Taille :=3 ;
+				when Torpilleur 		=> Taille :=2 ;
+				when others 			=> Taille :=1 ;
 			end case;
 
 			return Taille ;
@@ -70,35 +70,20 @@ package body bateau_pack is
 	end new_Bateau;
 
 
-
 	function new_Bateau_Aleatoire(cat:Categorie) return Bateau is
-	begin
+		(new_Bateau(	cat ,
+		 				hasard(9,1) ,
+		 				CoordonneeY'Val((Character'Pos('A')-1)+hasard(9,1))  ,
+		 				Direction  'Val(hasard(1  )))) ;
 
-		return new_Bateau(	cat ,
-							                hasard(9,1)   ,
-							CoordonneeY'Val((Character'Pos('A')-1)+hasard(9,1))  ,
-							Direction  'Val(hasard(1  ))   ) ;
-
-	end new_Bateau_Aleatoire;
-
-	function isTouching (Self : Bateau ; X1 : CoordonneeX ; Y1 : CoordonneeY) return Boolean is
-	begin
-		for x of Self.coordX loop
-		for y of Self.coordY loop
-			if x=X1 and y=Y1 then
-				return TRUE ;
-			end if;
-		end loop;
-		end loop;
-
-		return FALSE ;
-
-	end isTouching;
+	function isTouching (Self : Bateau ; X1 : CoordonneeX ; Y1 : CoordonneeY) return Boolean is 
+		(for some y of Self.coordY => 
+			(for some x of Self.coordX => x=X1 and y=Y1));
 
 	function toString (Self : Bateau) return Character is
-		chaine : String := (Self.categorie_Bateau'Image);
+		str : String := Self.categorie_Bateau'Image ;
 	begin
-		return chaine(1);
+		return str(1) ;
 	end toString ;
 
 end bateau_pack ;

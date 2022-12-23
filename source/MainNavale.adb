@@ -1,5 +1,7 @@
 with terrain_pack ; use terrain_pack ;
 with Ada.Text_IO ; use Ada.Text_IO ;
+with Ada.Strings.Fixed; use Ada.Strings.Fixed;
+with Ada.Characters.Handling ; use Ada.Characters.Handling ;
 
 procedure MainNavale is
 
@@ -24,6 +26,7 @@ begin
 
 		put("ou voulez vous tirer [A..I , 1..9] ? ");
 		get(input);
+		input := to_upper(input(1)) & input(2) ;
 
 		--le joueur tire sur t2
 		t2.tirer(Integer'Value ((1 => input(2))),input(1));

@@ -1,3 +1,5 @@
+with Ada.Strings.Fixed ; use Ada.Strings.Fixed  ;
+
 package body terrain_pack is
 
 	function new_Terrain(est_Visible : Boolean ; Hasardeux : Boolean:=false) return Terrain is
@@ -5,23 +7,11 @@ package body terrain_pack is
 		Bateau_Superposer_Error : exception ;
 
 		function Verif_Position return Boolean is
-		begin
-
-			for x in CoordonneeX loop
-			for y in CoordonneeY loop
-				for b0 of t.liste loop
-				for b1 of t.liste loop
-					if b0.isTouching(x,y) and b1.isTouching(x,y) and b0/=b1 then
-						return true ;
-					end if;
-				end loop;
-				end loop;
-			end loop;
-			end loop;
-
-			return false ;
-
-		end Verif_Position;
+			(for some x in CoordonneeX =>
+				(for some y in CoordonneeY =>
+					(for some b0 of t.liste =>
+						(for some b1 of t.liste =>
+							b0.isTouching(x,y) and b1.isTouching(x,y) and b0/=b1 ))));
 
 
 		--methode pas vraiment optimisé
@@ -83,17 +73,7 @@ package body terrain_pack is
 
 
 	function recherche(Self : Terrain ; X:CoordonneeX;Y:CoordonneeY) return Boolean is
-	begin
-		for b of Self.liste loop
-			if b.isTouching(X,Y) then
-				return true ;
-			end if;
-		end loop;
-
-		return false ;
-
-	end recherche;
-
+		(for some b of Self.liste => b.isTouching(X,Y));
 
 
 	function getBateau(Self : Terrain ; X:CoordonneeX;Y:CoordonneeY) return Bateau is
@@ -154,20 +134,26 @@ package body terrain_pack is
 
 
 	function perdu(Self : Terrain) return Boolean is
-	begin
-		return Self.nbr_case_couler = nbr_case_max ;
-	end perdu;
-
+		(Self.nbr_case_couler = nbr_case_max) ;
 
 
 	procedure toString(Self : Terrain) is
 
+		--for utf8 terminal
+		--CROSS : constant String := "╋";
+		--FLOOR : constant String := "━";
+		--WALL  : constant String := "┃";
+
+		CROSS : constant String := "+";
+		FLOOR : constant String := "-";
+		WALL  : constant String := "|";
+
 		procedure affiche_ligne is
 		begin -- affiche_ligne
-			put("╋");
+			put(CROSS);
 
 			for x in CoordonneeX loop
-				put("━━━╋");
+				put(3 * FLOOR & CROSS);
 			end loop;
 		end affiche_ligne;
 
@@ -181,7 +167,7 @@ package body terrain_pack is
 		affiche_ligne ;
 		new_line ;
 		for y in CoordonneeY loop
-			put("┃");
+			put(WALL);
 			for x in CoordonneeX loop
 
 				--si il y a un bateau ici
@@ -189,21 +175,21 @@ package body terrain_pack is
 
 					--si il est visible
 					if Self.estVisible then
-						put(Character'Image(Self.getBateau(x,y).toString) & "┃");
+						put(Character'Image(Self.getBateau(x,y).toString) & WALL);
 					else
 						--si le joueur a tiré ici
 						if Self.tab_tire(x,y) then
-							put(" O ┃");
+							put(" O "& WALL);
 						else
-							put("   ┃");							
+							put("   "& WALL);							
 						end if;
 					end if;
 				else
 					--si le joueur a tiré ici
 					if Self.tab_tire(x,y) then
-						put(" X ┃");
+						put(" X " & WALL);
 					else
-						put("   ┃");			
+						put("   " & WALL);			
 					end if;
 				end if;
 			end loop;
